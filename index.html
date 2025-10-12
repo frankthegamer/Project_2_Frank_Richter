@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hog Rider</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+</head>
+
+<body>
+  <div id="titleScreen">
+    <canvas id="titleCanvas"></canvas>
+    <div class="card intro-card">
+      <div class="info">
+        <h1>Hog Rider</h1>
+        <div class="subtitle">A,D / [<] [>] = move <br>[SPACE] = Jump<br>Left Click = Hammer</div>
+      </div>
+      <nav class="nav">
+        <button id="playBtn" class="button">Play</button>
+      </nav>
+      <div id="credits">
+        <p>Created by Frank Richter for CSI 2999</p>
+        </div>
+    </div>
+  </div>
+
+  <div id="gameUI" class="hidden">
+    <canvas id="renderCanvas"></canvas>
+    <div id="hud">
+      <div>Lives: <span id="lives">3</span></div>
+      <div>Score: <span id="score">0</span></div>
+    </div>
+    <div id="gameOver" class="hidden">
+      <h2>Game Over!</h2>
+      <p>High Score: <span id="finalScore">0</span></p>
+      <button id="restartBtn" class="button">Play Again</button>
+    </div>
+  </div>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/GLTFLoader.js"></script>
+  
+  <script src="./gameState.js"></script>
+  <script src="./titleScreen.js"></script>
+  <script src="./controls.js"></script>
+   <script src="./obstacles.js"></script>
+  <script src="./world.js"></script>
+  <script src="./player.js"></script>
+  <script src="./ui.js"></script>
+  <script src="./main.js"></script>
+</body>
+</html>
