@@ -62,7 +62,7 @@ function initTitleScreen() {
 function loadTitleModel() {
   const loader = new THREE.GLTFLoader();
   
-  loader.load('/models/hog_rider.glb', 
+  loader.load('./models/hog_rider.glb', 
     (gltf) => {
       titlePlayer = gltf.scene;
       titlePlayer.scale.set(1.5, 1.5, 1.5);
