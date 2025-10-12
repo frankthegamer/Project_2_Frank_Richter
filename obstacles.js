@@ -8,8 +8,8 @@ const gltfLoader = new THREE.GLTFLoader();
 // Call loadObstacles() in init
 function loadObstacles() {
   const modelsToLoad = [
-    { name: 'goblin', path: '/models/goblin.glb' },
-    { name: 'skeleton', path: '/models/skeleton.glb' }
+    { name: 'goblin', path: './models/goblin.glb' },
+    { name: 'skeleton', path: './models/skeleton.glb' }
   ];
 
   let loadedCount = 0;

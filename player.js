@@ -3,7 +3,7 @@
 function loadPlayer() {
   const loader = new THREE.GLTFLoader();
   
-  loader.load('/models/hog_rider.glb', 
+  loader.load('./models/hog_rider.glb', 
     (gltf) => {
       player = gltf.scene;
       player.scale.set(1, 1, 1);
