@@ -74,9 +74,9 @@ function spawnObstacle(zPos) {
     return;
   }
 
-  // Clone scene (this is fast). For most GLTFs clone(true) is fine.
+  // Clone scene 
   const instance = base.scene.clone(true);
-  instance.position.set(xPos, 0, zPos);
+  instance.position.set(xPos, -0.5, zPos);
   instance.scale.set(1.8, 1.8, 1.8);
   instance.rotation.y = Math.PI;
   instance.userData.beingDestroyed = false;
