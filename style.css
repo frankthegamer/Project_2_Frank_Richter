@@ -164,3 +164,18 @@ body {
   color: #555;
   margin-bottom: 30px;
 }
+
+/* ---------- Media queries for very small screens ---------- */
+@media (max-width: 420px) {
+  .mobile-btn {
+    min-width: 64px;
+    min-height: 64px;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+  }
+
+  .subtitle { font-size: 0.95rem; }
+  .intro-card h1 { font-size: 1.9rem; }
+
+  #hud { font-size: 16px; padding: 5px 10px; }
+}
