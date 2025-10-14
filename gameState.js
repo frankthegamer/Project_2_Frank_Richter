@@ -17,7 +17,7 @@ const gameState = {
 // Game constants
 const GRAVITY = 0.012;
 const JUMP_FORCE = 0.35;
-const MOVE_SPEED = 0.08;
+const MOVE_SPEED = isMobile ? 0.12 : 0.08;
 const TRACK_WIDTH = 6;
 const LANE_COUNT = 3;
 const LANE_WIDTH = TRACK_WIDTH / LANE_COUNT;
