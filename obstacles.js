@@ -1,5 +1,3 @@
-// Obstacles & coins (no extra libs, efficient, single implementation)
-
 // --- loader/state ---
 let obstacleModels = {};
 let obstacleModelsLoaded = false;
