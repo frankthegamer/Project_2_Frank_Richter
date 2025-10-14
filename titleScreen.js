@@ -58,26 +58,6 @@ function initTitleScreen() {
   // Window resize handler
   window.addEventListener('resize', onTitleResize);
 
-  // Detect mobile
-function isMobile() {
-  return /Mobi|Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
-}
-
-// Update instructions
-const instructions = document.getElementById('instructions');
-if (instructions) {
-  if (isMobile()) {
-    instructions.innerHTML = "Touch & drag = move<br>Swipe Up = Jump<br>Tap = Hammer";
-  } else {
-    instructions.innerHTML = "A,D / [<] [>] = move <br>[SPACE] = Jump<br>Left Click = Hammer";
-  }
-}
-
-if (isMobile()) {
-  titleCamera.position.set(0, 2.5, 5); // zoom out a bit
-  titleCamera.lookAt(-2, 1, 0);
-}
-
 }
 
 function loadTitleModel() {
