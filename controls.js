@@ -73,3 +73,51 @@ function updatePlayer(delta) {
     mixer.update(delta);
   }
 }
+
+
+// MOBILE CONTROLS
+
+// Detect mobile
+const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+if (isMobile) {
+  // ---- Tilt Controls ----
+  window.addEventListener('deviceorientation', (event) => {
+    const tilt = event.gamma; // side tilt: left (-), right (+)
+
+    if (tilt < -5) {
+      gameState.playerX -= MOVE_SPEED * 1.2;
+    } else if (tilt > 5) {
+      gameState.playerX += MOVE_SPEED * 1.2;
+    }
+  });
+
+  // ---- Swipe Controls ----
+  let touchStartY = 0;
+  let touchEndY = 0;
+
+  window.addEventListener('touchstart', (e) => {
+    touchStartY = e.changedTouches[0].screenY;
+  });
+
+  window.addEventListener('touchend', (e) => {
+    touchEndY = e.changedTouches[0].screenY;
+    handleSwipe();
+  });
+
+  function handleSwipe() {
+    const swipeDistance = touchStartY - touchEndY;
+    if (swipeDistance > 50 && !gameState.isJumping && gameState.playerY === 0) {
+      // Swipe up to jump
+      gameState.isJumping = true;
+      gameState.playerVelocityY = JUMP_FORCE;
+    }
+  }
+
+  // Optional: Tap to Hammer
+  window.addEventListener('touchstart', (e) => {
+    if (!gameState.isHammering && !gameState.isGameOver && gameState.isRunning) {
+      activateHammer();
+    }
+  });
+}
