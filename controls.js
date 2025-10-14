@@ -78,7 +78,7 @@ function updatePlayer(delta) {
 // MOBILE CONTROLS
 
 // ----------------------
-// Mobile Controls Module
+// Mobile Controls Module (fixed: swipe-up won't also slide horizontally)
 // ----------------------
 const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
@@ -90,12 +90,13 @@ if (isMobile) {
   let touchStartX = 0;
   let touchStartY = 0;
   let touchLastX = 0;
-  let moved = false; // whether the finger has moved enough to be considered a drag
+  let moved = false;               // whether finger moved beyond deadzone
+  let gestureType = null;         // null | 'vertical' | 'horizontal'
 
   // tuning
   const TAP_MOVE_THRESHOLD = 12;     // px — if movement < this, it's a tap
   const SWIPE_VERTICAL_MIN = 50;     // px upward movement to count as a swipe jump
-  const DRAG_DEADZONE = 4;           // px before we consider movement as dragging
+  const DRAG_DEADZONE = 6;           // px before we decide gesture type
 
   window.addEventListener('touchstart', (e) => {
     const t = e.changedTouches[0];
@@ -104,12 +105,13 @@ if (isMobile) {
     touchStartY = t.clientY;
     touchLastX = t.clientX;
     moved = false;
+    gestureType = null;
   }, { passive: true });
 
   window.addEventListener('touchmove', (e) => {
     if (activeTouchId === null) return;
 
-    // locate the active touch in the changedTouches list
+    // find our active touch in changedTouches
     let t = null;
     for (let i = 0; i < e.changedTouches.length; i++) {
       if (e.changedTouches[i].identifier === activeTouchId) {
@@ -119,27 +121,38 @@ if (isMobile) {
     }
     if (!t) return;
 
-    const dxSinceLast = t.clientX - touchLastX;
     const totalDx = t.clientX - touchStartX;
-    const totalDy = Math.abs(t.clientY - touchStartY);
+    const totalDy = t.clientY - touchStartY; // note: positive means moving down
+    const absDx = Math.abs(totalDx);
+    const absDy = Math.abs(totalDy);
 
-    // mark moved if user dragged beyond deadzone
-    if (!moved && Math.abs(totalDx) > DRAG_DEADZONE) moved = true;
+    // decide gesture type once movement passes deadzone
+    if (!moved && Math.max(absDx, absDy) > DRAG_DEADZONE) {
+      moved = true;
+      // if vertical movement larger than horizontal -> vertical gesture (swipe)
+      if (absDy > absDx) {
+        gestureType = 'vertical';
+      } else {
+        gestureType = 'horizontal';
+      }
+    }
 
     touchLastX = t.clientX;
 
-    // Continuous slide steering: map finger X to playerX
-    // Use the finger's absolute x-position on screen for precise control
-    const pct = t.clientX / window.innerWidth; // 0..1
-    // map to -maxX..maxX
-    gameState.playerX = (pct * 2 - 1) * maxX;
-    // clamp
-    gameState.playerX = Math.max(-maxX, Math.min(maxX, gameState.playerX));
+    if (gestureType === 'horizontal' || gestureType === null) {
+      // Continuous slide steering: map finger X to playerX
+      // (if gestureType is null we still allow small initial horizontal updates)
+      const pct = t.clientX / window.innerWidth; // 0..1
+      gameState.playerX = (pct * 2 - 1) * maxX;
+      gameState.playerX = Math.max(-maxX, Math.min(maxX, gameState.playerX));
 
-    // prevent page scrolling while dragging horizontally
-    // only prevent when it looks like a horizontal drag
-    if (Math.abs(totalDx) > Math.abs(t.clientY - touchStartY)) {
-      e.preventDefault(); // requires passive: false; we set passive: false below
+      // prevent page from scrolling when horizontal drag dominates
+      if (Math.abs(totalDx) > Math.abs(totalDy)) {
+        e.preventDefault(); // requires passive: false; set below
+      }
+    } else {
+      // gestureType === 'vertical' -> do not change horizontal position while swiping up/down
+      // optionally we could capture a small vertical-only visual effect here
     }
   }, { passive: false });
 
@@ -157,27 +170,27 @@ if (isMobile) {
     if (!t) return;
 
     const totalDx = t.clientX - touchStartX;
-    const totalDy = touchStartY - t.clientY; // positive if swipe up
+    const totalDyUp = touchStartY - t.clientY; // positive if swipe up
     const absDx = Math.abs(totalDx);
-    const absDy = Math.abs(totalDy);
+    const absDy = Math.abs(t.clientY - touchStartY);
 
-    // 1) Swipe up -> jump
-    if (totalDy > SWIPE_VERTICAL_MIN && absDy > absDx) {
+    // 1) Swipe up (vertical gesture or large vertical move) -> jump
+    if ((gestureType === 'vertical' && totalDyUp > SWIPE_VERTICAL_MIN) ||
+        (totalDyUp > SWIPE_VERTICAL_MIN && absDy > absDx)) {
       if (!gameState.isJumping && gameState.playerY === 0) {
         gameState.isJumping = true;
         gameState.playerVelocityY = JUMP_FORCE;
       }
 
-    // 2) Otherwise, if it's a small movement (tap), treat as tap -> hammer
+    // 2) Tap (small movement) -> hammer
     } else if (!moved && absDx < TAP_MOVE_THRESHOLD && absDy < TAP_MOVE_THRESHOLD) {
       if (gameState.isRunning && !gameState.isGameOver && !gameState.isHammering) {
         activateHammer();
       }
 
-    // 3) Otherwise if it was a deliberate horizontal flick (optional nudge)
-    } else if (absDx > TAP_MOVE_THRESHOLD && absDx > absDy) {
-      // optional: quick horizontal flick nudges player a bit
-      // uncomment the block below if you want flick-to-nudge behavior:
+    // 3) Horizontal flick / nudge (optional)
+    } else if (gestureType === 'horizontal' && absDx > TAP_MOVE_THRESHOLD && absDx > absDy) {
+      // optional nudge behavior (uncomment if desired)
       /*
       const nudge = maxX / 2; // half-track nudge; change to lane width if using lanes
       if (totalDx > 0) {
@@ -191,14 +204,13 @@ if (isMobile) {
     // reset
     activeTouchId = null;
     moved = false;
+    gestureType = null;
   }, { passive: true });
 
   window.addEventListener('touchcancel', () => {
     activeTouchId = null;
     moved = false;
+    gestureType = null;
   }, { passive: true });
-
-  // Optional: if you want a visual on-screen joystick / left-right buttons for accessibility,
-  // you can add simple DOM buttons and hook them to set gameState.playerX or nudge left/right.
 }
 
