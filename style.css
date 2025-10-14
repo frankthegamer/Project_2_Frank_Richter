@@ -165,17 +165,14 @@ body {
   margin-bottom: 30px;
 }
 
-/* ---------- Media queries for very small screens ---------- */
-@media (max-width: 420px) {
-  .mobile-btn {
-    min-width: 64px;
-    min-height: 64px;
-    padding: 10px 14px;
-    font-size: 0.95rem;
-  }
+/* Mobile control helpers (if you're showing visible controls) */
+.mobile-controls { bottom: 18px; left: 0; right: 0; position: fixed; z-index: 1200; pointer-events: none; }
+.mobile-controls .controls-inner { width: min(96vw, 920px); margin: 0 auto; pointer-events: auto; }
 
-  .subtitle { font-size: 0.95rem; }
-  .intro-card h1 { font-size: 1.9rem; }
-
-  #hud { font-size: 16px; padding: 5px 10px; }
+/* Small screens extreme tweaks */
+@media (max-width: 360px) {
+  .card { padding: clamp(10px, 5vw, 26px); }
+  .intro-card h1 { font-size: clamp(1.4rem, 8.5vw, 2.1rem); }
+  .subtitle { font-size: 0.9rem; }
+  .button { min-width: 80px; min-height: 44px; }
 }
