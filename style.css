@@ -173,6 +173,14 @@ body {
   margin-bottom: 30px;
 }
 
+#hud, #hud * {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+
 /* Mobile control helpers (if you're showing visible controls) */
 .mobile-controls { bottom: 18px; left: 0; right: 0; position: fixed; z-index: 1200; pointer-events: none; }
 .mobile-controls .controls-inner { width: min(96vw, 920px); margin: 0 auto; pointer-events: auto; }
