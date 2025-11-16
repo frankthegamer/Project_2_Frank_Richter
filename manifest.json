@@ -1,0 +1,21 @@
+{
+  "name": "Hog Rider",
+  "short_name": "HogRider",
+  "description": "A PC + Mobile runner game. Hog Rider!!!",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#87CEEB",
+  "theme_color": "#764ba2",
+  "icons": [
+    {
+      "src": "./img/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./img/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -12,6 +12,20 @@ function initTitleScreen() {
   titleCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
   titleCamera.position.set(0, 2, 4);
   titleCamera.lookAt(-2.5, 1, 0);
+
+  // MOBILE ADJUSTMENTS
+if (window.innerWidth < 768) {
+    // Wider FOV so more fits on screen
+    titleCamera.fov = 65;
+    titleCamera.updateProjectionMatrix();
+    
+    // Move camera back slightly
+    titleCamera.position.set(0, 2.2, 5.2);
+
+    // Look more toward center
+    titleCamera.lookAt(-1.5, 1, 0);
+}
+
   
   // Renderer
   const canvas = document.getElementById('titleCanvas');
@@ -67,7 +81,15 @@ function loadTitleModel() {
     (gltf) => {
       titlePlayer = gltf.scene;
       titlePlayer.scale.set(1.5, 1.5, 1.5);
-      titlePlayer.position.set(-6.0, -0.5, 0);
+      if (window.innerWidth < 768) {
+    // Push model closer to center on mobile
+    titlePlayer.position.set(-2.0, -0.5, 0);
+    titlePlayer.scale.set(1.2, 1.2, 1.2);
+    } else {
+        // Desktop original
+        titlePlayer.position.set(-6.0, -0.5, 0);
+    }
+
       titlePlayer.rotation.y = -Math.PI / 2; // Face forward/slightly towards camera
       
       titlePlayer.traverse((node) => {
@@ -121,12 +143,26 @@ function animateTitleScreen() {
 }
 
 function onTitleResize() {
-  if (titleCamera && titleRenderer) {
-    titleCamera.aspect = window.innerWidth / window.innerHeight;
-    titleCamera.updateProjectionMatrix();
-    titleRenderer.setSize(window.innerWidth, window.innerHeight);
+  if (!titleCamera || !titleRenderer) return;
+
+  const isMobile = window.innerWidth < 768;
+
+  // Adjust camera for mobile vs desktop
+  if (isMobile) {
+    titleCamera.fov = 65;
+    titleCamera.position.set(0, 2.2, 5.2);
+    titleCamera.lookAt(-1.5, 1, 0);
+  } else {
+    titleCamera.fov = 50;
+    titleCamera.position.set(0, 2, 4);
+    titleCamera.lookAt(-2.5, 1, 0);
   }
+
+  titleCamera.aspect = window.innerWidth / window.innerHeight;
+  titleCamera.updateProjectionMatrix();
+  titleRenderer.setSize(window.innerWidth, window.innerHeight);
 }
+
 
 function stopTitleScreen() {
   if (titleAnimationId) {
@@ -137,3 +173,27 @@ function stopTitleScreen() {
 
 // Initialize title screen on page load
 window.addEventListener('DOMContentLoaded', initTitleScreen);
+
+function updateInstructionsForDevice() {
+  const el = document.getElementById("controlInstructions");
+
+  const isMobile = window.innerWidth < 768 || 'ontouchstart' in window;
+
+  if (isMobile) {
+    el.innerHTML = `
+      Touch = Move <br>
+      Swipe up = Jump <br>
+      Tap = Hammer
+    `;
+  } else {
+    el.innerHTML = `
+      A / D = Move <br>
+      SPACE = Jump <br>
+      Left Click = Hammer
+    `;
+  }
+}
+
+window.addEventListener("DOMContentLoaded", updateInstructionsForDevice);
+window.addEventListener("resize", updateInstructionsForDevice);
+

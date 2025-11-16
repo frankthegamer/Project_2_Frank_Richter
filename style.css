@@ -37,12 +37,12 @@ body {
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: flex-start;
-  justify-content: flex-end;
-  padding-right: 30%;
-  padding-top: 5%;
+  align-items: center;   /* center vertically */
+  justify-content: center; /* center horizontally */
+  padding: 0;             /* remove side offsets */
   z-index: 1000;
 }
+
 
 #titleCanvas {
   position: absolute;
@@ -177,10 +177,34 @@ body {
 .mobile-controls { bottom: 18px; left: 0; right: 0; position: fixed; z-index: 1200; pointer-events: none; }
 .mobile-controls .controls-inner { width: min(96vw, 920px); margin: 0 auto; pointer-events: auto; }
 
-/* Small screens extreme tweaks */
+
+/* General mobile tweaks */
+@media (max-width: 768px) {
+  .card {
+    max-width: 90vw;
+    padding: 40px 30px;
+  }
+
+  .intro-card h1 {
+    font-size: 2.2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .button {
+    padding: 16px 40px;
+    font-size: 1.2rem;
+  }
+}
+
+/* Very small screens (old phones, SE, budget androids) */
 @media (max-width: 360px) {
   .card { padding: clamp(10px, 5vw, 26px); }
   .intro-card h1 { font-size: clamp(1.4rem, 8.5vw, 2.1rem); }
   .subtitle { font-size: 0.9rem; }
   .button { min-width: 80px; min-height: 44px; }
 }
+
+

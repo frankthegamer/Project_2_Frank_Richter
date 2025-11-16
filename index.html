@@ -6,6 +6,9 @@
   <title>Hog Rider</title>
   <link rel="stylesheet" href="./style.css">
   <link rel="icon" type="image/png" href="./img/favicon.png">
+  
+  <link rel="manifest" href="manifest.json">
+
 </head>
 
 <body>
@@ -14,9 +17,12 @@
     <div class="card intro-card">
       <div class="info">
         <h1>Hog Rider</h1>
-        <h2>PC | Mobile </h2>
-        <div class="subtitle">
-          A,D | touch+slide = move <br>[SPACE] | swipe up = Jump<br>Left Click | tap = Hammer</div>
+        <h2>controls</h2>
+        <div class="subtitle" id="controlInstructions">
+          A,D | touch+slide = move <br>
+          [SPACE] | swipe up = Jump<br>
+          Left Click | tap = Hammer
+        </div>
       </div>
       <nav class="nav">
         <button id="playBtn" class="button">Play</button>
@@ -48,7 +54,7 @@
   <script src="./gameState.js"></script>
   <script src="./titleScreen.js"></script>
   <script src="./controls.js"></script>
-   <script src="./obstacles.js"></script>
+  <script src="./obstacles.js"></script>
   <script src="./world.js"></script>
   <script src="./player.js"></script>
   <script src="./ui.js"></script>
